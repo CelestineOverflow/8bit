@@ -12,14 +12,19 @@
 #define led0 27
 #define inputPin 16
 #define baudRate 115200
-#define DEBUG 1
+#define DEBUG 0
 #define ASCII_START 48
 #define ASCII_END 122
+#define MAX_CHARACTER_COUNT 8
+String inputString = "1";
 // prototypes
 void printColumn(int column);
 void input_character(char c, int column);
 void print_character(char c, int column);
-
+void displayString_front(String input_characters);
+void displayString_back(String input_characters);
+void inputHandler();
+bool forward = false;
 
 bool characters[8][608] = { // array of characters ascii values 48 to 122
     {0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 0, 0, 1, 1, 0, 1, 1, 0, 0, 0, 1, 1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
@@ -42,17 +47,88 @@ void setup()
   pinMode(led2, OUTPUT);
   pinMode(led1, OUTPUT);
   pinMode(led0, OUTPUT);
+  pinMode(inputPin, PULLDOWN);
+  attachInterrupt(digitalPinToInterrupt(inputPin), inputHandler, CHANGE);
 }
+
+int periodPerStroke = 0;
+int loopStart = 0;
+int loopEnd = 0;
 
 void loop()
 {
-  for (int i = 0; i < 8; i++) // goes thru each column in the corresping letter
+  loopStart = micros();
+  if (forward)
   {
-    Serial.printf("%d\n", i);
-    print_character('1', i);
-    delay(1000);
+    displayString_front(inputString);
+  }
+  else
+  {
+    displayString_back(inputString);
   }
 }
+
+void inputHandler()
+{
+  loopEnd = micros();
+  periodPerStroke = loopEnd - loopStart;
+  forward = !forward;
+}
+#define frequency 0.0625
+
+void displayString_front(String input_characters)
+{
+  long long startTime = micros();
+  int input_characters_length = input_characters.length();
+  double period = (1.0 / frequency) / 2.0;
+  double timePerCharacter = period / input_characters_length;
+  double timePerColumn = timePerCharacter / 8.0;
+  int timePerColumn_microseconds = (int)(timePerColumn * 1000000);
+  Serial.printf("period %f column %lf char %lf  millis %d\n", period, timePerColumn, timePerCharacter, timePerColumn_microseconds);
+  for (int i = 0; i < input_characters_length; i++)
+  {
+    int j = 0;
+    while (j < 8)
+    {
+      if (micros() - startTime > timePerColumn_microseconds)
+      {
+        j++;
+        startTime = micros();
+      }
+      print_character(input_characters[i], j);
+    }
+  }
+}
+
+void displayString_back(String input_characters)
+{
+  long long startTime = micros();
+  int input_characters_length = input_characters.length();
+  double period = (1 / frequency) / 2;
+  double timePerCharacter = period / input_characters_length;
+  double timePerColumn = timePerCharacter / 8;
+  int timePerColumn_microseconds = (int)(timePerColumn * 1000000);
+  for (int i = input_characters_length - 1; i >= 0; i--)
+  {
+    int j = 7;
+    while (j >= 0)
+    {
+      if (micros() - startTime > timePerColumn_microseconds)
+      {
+        j--;
+        startTime = micros();
+      }
+      print_character(input_characters[i], j);
+    }
+  }
+
+  /*for (int j = 0; j < 8; j++)
+    {
+      print_character(input_characters[i], j);
+      delayMicroseconds(timePerColumn_microseconds);
+    }*/
+}
+
 void printColumn(int column) // print the column for output leds
 {
   digitalWrite(led7, characters[0][column]);

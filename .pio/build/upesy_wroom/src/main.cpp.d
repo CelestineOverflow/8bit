@@ -123,4 +123,7 @@
  C:/Users/celes/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32/include/hal/include/hal/esp_flash_err.h \
  C:/Users/celes/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32/include/spi_flash/include/esp_spi_flash.h \
  C:/Users/celes/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32/include/spi_flash/include/esp_spi_flash_counters.h \
- C:/Users/celes/.platformio/packages/framework-arduinoespressif32/variants/uPesy_esp32_wroom_devkit/pins_arduino.h
+ C:/Users/celes/.platformio/packages/framework-arduinoespressif32/variants/uPesy_esp32_wroom_devkit/pins_arduino.h \
+ C:/Users/celes/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32/include/newlib/platform_include/pthread.h \
+ C:/Users/celes/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32/include/newlib/platform_include/sys/time.h \
+ src/characters.h

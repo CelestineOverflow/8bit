@@ -217,16 +217,16 @@ void keyPressed(int key)
 {
   switch (key)
   {
-  case 2:
+  case 1:
     Serial.println("play");
     break;
-  case 3:
+  case 2:
     Serial.println("pause");
     break;
-  case 4:
+  case 3:
     Serial.println("next");
     break;
-  case 5:
+  case 4:
     Serial.println("prev");
     break;
   default:
@@ -240,22 +240,22 @@ void checkKeyboard()
 {
   if (digitalRead(playButtonPin) == LOW)
   {
+    keyPressed(1);
+    return; // return to avoid double key presses
+  }
+  else if (digitalRead(pauseButtonPin) == LOW)
+  {
     keyPressed(2);
     return; // return to avoid double key presses
   }
-  if (digitalRead(pauseButtonPin) == LOW)
+  else if (digitalRead(nextButtonPin) == LOW)
   {
     keyPressed(3);
     return; // return to avoid double key presses
   }
-  if (digitalRead(nextButtonPin) == LOW)
+  else if (digitalRead(prevButtonPin) == LOW)
   {
     keyPressed(4);
-    return; // return to avoid double key presses
-  }
-  if (digitalRead(prevButtonPin) == LOW)
-  {
-    keyPressed(5);
     return; // return to avoid double key presses
   }
 }

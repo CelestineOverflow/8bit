@@ -39,6 +39,7 @@ void setup()
   input("CELESTE");
   Serial.begin(baudRate); // start serial communication
   Serial.println("Starting...");
+  keyboard_setup();
   pinMode(led7, OUTPUT); // set led pin to output
   pinMode(led6, OUTPUT);
   pinMode(led5, OUTPUT);
@@ -68,6 +69,7 @@ void loop()
     loopStartTime = millis();
     Serial.printf("forward: %d", forward);
     Serial.println("periodPerStroke: " + String(periodPerStroke));
+    checkKeyboard();
   }
 }
 void *mainThread(void *arg)
@@ -197,7 +199,7 @@ void input(String input_characters)// input the characters to the display
 }
 
 //Key Logic
-
+// TODO:  assign pins to keys
 int playButtonPin = 2;
 int pauseButtonPin = 3;
 int nextButtonPin = 4;
@@ -257,3 +259,9 @@ void checkKeyboard()
     return; // return to avoid double key presses
   }
 }
+
+void SerialEvent()// serial event interrupt
+{
+  String input_characters = Serial.readStringUntil('\n');
+}
+

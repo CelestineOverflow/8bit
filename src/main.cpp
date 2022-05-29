@@ -195,3 +195,65 @@ void input(String input_characters)// input the characters to the display
     }
   }
 }
+
+//Key Logic
+
+int playButtonPin = 2;
+int pauseButtonPin = 3;
+int nextButtonPin = 4;
+int prevButtonPin = 5;
+
+void keyboard_setup()
+{
+  pinMode(playButtonPin, INPUT_PULLUP);
+  pinMode(pauseButtonPin, INPUT_PULLUP);
+  pinMode(nextButtonPin, INPUT_PULLUP);
+  pinMode(prevButtonPin, INPUT_PULLUP);
+}
+
+void keyPressed(int key)
+{
+  switch (key)
+  {
+  case 2:
+    Serial.println("play");
+    break;
+  case 3:
+    Serial.println("pause");
+    break;
+  case 4:
+    Serial.println("next");
+    break;
+  case 5:
+    Serial.println("prev");
+    break;
+  default:
+    Serial.println("invalid key");
+    break;
+  }
+  delay(1000);
+}
+
+void checkKeyboard()
+{
+  if (digitalRead(playButtonPin) == LOW)
+  {
+    keyPressed(2);
+    return; // return to avoid double key presses
+  }
+  if (digitalRead(pauseButtonPin) == LOW)
+  {
+    keyPressed(3);
+    return; // return to avoid double key presses
+  }
+  if (digitalRead(nextButtonPin) == LOW)
+  {
+    keyPressed(4);
+    return; // return to avoid double key presses
+  }
+  if (digitalRead(prevButtonPin) == LOW)
+  {
+    keyPressed(5);
+    return; // return to avoid double key presses
+  }
+}

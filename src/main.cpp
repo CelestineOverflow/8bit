@@ -241,23 +241,20 @@ void checkKeyboard()
   if (digitalRead(playButtonPin) == LOW)
   {
     keyPressed(1);
-    return; // return to avoid double key presses
   }
   else if (digitalRead(pauseButtonPin) == LOW)
   {
     keyPressed(2);
-    return; // return to avoid double key presses
   }
   else if (digitalRead(nextButtonPin) == LOW)
   {
     keyPressed(3);
-    return; // return to avoid double key presses
   }
   else if (digitalRead(prevButtonPin) == LOW)
   {
     keyPressed(4);
-    return; // return to avoid double key presses
   }
+  return;
 }
 
 void SerialEvent()// serial event interrupt

@@ -4,11 +4,12 @@ import sys
 from turtle import delay
 from unittest import result
 from webbrowser import get
+from numpy import array
 import spotipy
 import spotipy.util as util
 import time
 import serial as comunication
-arduino = comunication.Serial(port='COM11', baudrate=115200, timeout=.1)
+arduino = comunication.Serial(port='COM8', baudrate=115200, timeout=.1)
 scope = 'user-read-currently-playing', 'user-read-playback-state', 'user-modify-playback-state', 
 username = '12174615660'
 SPOTIPY_CLIENT_ID = '9324602b14d14d92a50a8add58db4919'
@@ -17,26 +18,38 @@ SPOTIPY_CLIENT_SECRET = '4d7f3c5967dd402fb51ffefe00154ff0'
 token = util.prompt_for_user_token(username, scope, SPOTIPY_CLIENT_ID, SPOTIPY_CLIENT_SECRET, redirect_uri='http://localhost:8888/callback')
 
 def sense_press():
+    print("sense press")
     data = arduino.readline().decode('utf-8')
     print(data)
     arduino.flushInput()
     arduino.flushOutput()
     arduino.sendBreak()
     data.split()
-    if data == '':
-        data = '9'	
+    if data.isdigit() != True:
+        data = '0'	
     output = int(data)
     return output
 
+def sendSong(song):
+    arduino.write(song.encode('utf-8'))
+    print("song sent")
+def receiveData():
+    data = arduino.readline().decode('utf-8')
+    print("song received")
+    print(data)
+
 def keyboard_input_from_controller(input):
+    input = (int) (input)
     if(input == 1):
         spotipy.Spotify(auth=token).start_playback()
-    elif(input == 0):
-        spotipy.Spotify(auth=token).pause_playback()
     elif(input == 2):
-        spotipy.Spotify(auth=token).next_track()
+        spotipy.Spotify(auth=token).pause_playback()
     elif(input == 3):
+        spotipy.Spotify(auth=token).next_track()
+    elif(input == 4):
         spotipy.Spotify(auth=token).previous_track()
+    else:
+        print("dont do shit")
         
 if token:
     sp = spotipy.Spotify(auth=token),
@@ -44,13 +57,17 @@ if token:
     album = spotipy.Spotify(auth=token).current_user_playing_track().get('item').get('album').get('name')
     artist = spotipy.Spotify(auth=token).current_user_playing_track().get('item').get('artists')[0].get('name')
     print(songName + ' - ' + album + ' - ' + artist)
-    #play a song
-    #spotipy.Spotify(auth=token).start_playback(uris=['spotify:track:4uLU6hMCjMI75M1A2tKUQC'])
-    #pause a song
-    #time.sleep(5)
-    #spotipy.Spotify(auth=token).pause_playback()
-    while(True):
-        keyboard_input_from_controller(sense_press())
-else:
-            print("Can't get token for", username)
+    sendSong("_" + songName.upper().replace(" ", "_") + "_")
+    receiveData()
+while True:
+    time.sleep(1)
+    try:
+        input = sense_press()
+        keyboard_input_from_controller(input)
+        songName = spotipy.Spotify(auth=token).current_user_playing_track().get('item').get('name')
+        sendSong("_" + songName.upper().replace(" ", "_") + "_")
+        receiveData()
+    except:
+        print("no song playing")
+   
 

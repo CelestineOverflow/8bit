@@ -425,7 +425,7 @@
                 ]
             },
             "defines": [
-                "PLATFORMIO=60001",
+                "PLATFORMIO=60002",
                 "ARDUINO_uPesy_WROOM",
                 "HAVE_CONFIG_H",
                 "MBEDTLS_CONFIG_FILE=\"mbedtls/esp_config.h\"",

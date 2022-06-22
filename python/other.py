@@ -9,6 +9,7 @@ import spotipy
 import spotipy.util as util
 import time
 import serial as comunication
+import re
 arduino = comunication.Serial(port='COM8', baudrate=115200, timeout=.1)
 scope = 'user-read-currently-playing', 'user-read-playback-state', 'user-modify-playback-state', 
 username = '12174615660'
@@ -65,7 +66,12 @@ while True:
         input = sense_press()
         keyboard_input_from_controller(input)
         songName = spotipy.Spotify(auth=token).current_user_playing_track().get('item').get('name')
-        sendSong("_" + songName.upper().replace(" ", "_") + "_")
+                
+        songName = re.sub('[!\"#$%&\'()*+,-./{|}~]', '', songName)  # remove chars that are outside of the range of ASCII 48-122
+        songName = re.sub('[ ]', '_', songName)                     # replace spaces with underscore
+        songName = songName.upper()                                 # to uppercase
+        sendSong("_" + songName + "_")
+        
         receiveData()
     except:
         print("no song playing")
